@@ -1,92 +1,58 @@
-# Privacy Policy for Candidate Ranker
+# Talent Matcher privacy and data handling
 
-*Last updated: March 2026*
+Updated: 27 October 2026. This policy describes Talent Matcher version 1.3.0.
 
-## Overview
+## What the extension processes
 
-Candidate Ranker is a browser extension that helps recruiters rank job candidates using AI. This privacy policy explains how the extension handles data.
+Talent Matcher reads candidate fields displayed on supported SEEK Talent Search and LinkedIn Recruiter pages to provide recruiter-requested match scores. It also stores the position description you enter and, on SEEK, tracks repeat viewport sightings of stable profile IDs.
 
-## Data Collection
+There is no developer-operated collection service, advertising SDK or analytics backend in this extension. That does not mean data never leaves your device: requested ranking sends the job description and scraped candidate fields to your selected AI provider.
 
-**Candidate Ranker does not collect, store, or transmit any personal data to our servers.** We do not have access to your data.
+## Local storage
 
-## Data Storage
+- Provider settings and Gemini/GLM keys are stored in extension-local browser storage, not newly written to Chrome Sync. Older synced configuration is migrated locally and verified before the synced source is removed.
+- Settings for different providers remain separate. Account/provider switching does not transfer one provider's key to another.
+- The saved position description remains in local extension storage until replaced, cleared, or extension data is removed.
+- Seen history persists stable SEEK profile IDs, counts and last-seen timestamps. Profile IDs can still identify people within SEEK and should be treated as personal data. Names, search/service tokens and full profiles are not written to that history store.
+- Scraped candidate fields and displayed match results are processed in memory. They are not intentionally persisted as full candidate profiles by the extension.
 
-All data is stored locally on your device:
+Browser-local storage is not a separate encrypted vault. Protect the device and browser profile. Code limits direct access to trusted extension contexts and public configuration responses report key presence instead of keys, but these controls are not a guarantee against a compromised device or browser.
 
-- **API Keys**: Your AI provider API keys (GLM/Zhipu AI or Google Gemini) are stored locally in your browser's extension storage. These keys never leave your device except when used to authenticate with the respective AI service.
-- **Position Descriptions**: Job descriptions you enter are stored locally in your browser.
+## AI providers
 
-## Third-Party Services
+Gemini and GLM ranking transmit the saved position description and relevant candidate fields directly to the configured provider over HTTPS when you request ranking. Batch requests include the profile ID, name, title, location and available summary. Single-profile requests can include name, title, previous title, summary, current role/company, location, salary information, skills, work-history role/company/descriptions and certifications where available. These are personal data, even when already visible to your recruiting account.
 
-This extension uses third-party AI services to analyze and rank candidates:
+Your API key is sent to the selected provider for authentication, including model discovery, connection tests and ranking. Model refresh requests the provider's model catalogue, not candidate analysis. A connection test sends a small test prompt and may consume provider usage. Saving a position description stores its original text locally; it does not itself request an AI summary. The extension does not automatically fall back to a different provider.
 
-### GLM (Zhipu AI)
-- **Website**: https://open.bigmodel.cn
-- **Privacy Policy**: https://open.bigmodel.cn/terms
-- Candidate profile data is sent to Zhipu AI's servers for analysis when you use the GLM provider.
+Provider policies and retention are outside this extension's control:
 
-### Google Gemini
-- **Website**: https://ai.google.dev
-- **Privacy Policy**: https://policies.google.com/privacy
-- Candidate profile data is sent to Google's servers for analysis when you use the Gemini provider.
+- Google Gemini: https://policies.google.com/privacy and https://ai.google.dev/
+- GLM/Zhipu/z.ai: consult the current privacy and account terms at https://open.bigmodel.cn and https://api.z.ai/
 
-**Important**: By using this extension, you acknowledge that candidate profile information will be transmitted to your chosen AI provider. You are responsible for ensuring compliance with applicable privacy laws and regulations in your jurisdiction.
+Review your organisation's recruitment/privacy obligations before transmitting candidate information. AI scores can be wrong or reflect incomplete profile information; do not treat them as automatic hiring decisions.
 
-## Candidate Data
+## Optional ChatGPT account helper
 
-- Candidate profiles are read from LinkedIn and Seek pages you visit
-- This data is temporarily processed in memory and sent to your selected AI provider for ranking
-- Candidate data is not stored persistently by this extension
-- Candidate data is not shared with any parties other than your selected AI provider
+ChatGPT linking uses the official local Codex app-server through a separately installed Native Messaging helper. Sign-in occurs on OpenAI's official authorization page. Credentials are stored in Talent Matcher's private helper directory, not extension storage, and are not imported from Hermes, another Codex app or ChatGPT browser cookies.
 
-## Your Responsibilities
+The current helper supports account linking and official model-catalog discovery. ChatGPT scoring is intentionally disabled because the installed Codex integration cannot verify a tools-disabled inference session. It does not start a ChatGPT ranking thread.
 
-As a user of this extension, you are responsible for:
+Subscription sign-in and API-key billing are separate. OpenAI's policies and workspace rules apply to account access: https://openai.com/policies/privacy-policy/.
 
-1. Obtaining necessary consent before processing candidate information
-2. Complying with applicable data protection laws (GDPR, CCPA, etc.)
-3. Understanding and accepting the privacy policies of your chosen AI provider
-4. Safeguarding your API keys
+## Seen badges are not eye tracking
 
-## Changes to This Policy
+A badge measures a qualified card appearance in a focused, visible viewport. It cannot know whether you looked at or read the profile. Repeated IDs are flagged visually; profiles are not automatically hidden or rejected.
 
-We may update this privacy policy from time to time. Changes will be posted on this page with an updated revision date.
+## Removing data
 
-## Contact
+Clear or replace the saved position description through the popup. Disconnect ChatGPT through Settings to sign out of Talent Matcher's owned helper account. Removing the extension/browser extension data removes its local settings and seen history. Removing a Chrome extension does not by itself remove the separately installed native helper or its local directory; see native/README.md for its owned registration removal instructions.
 
-For questions about this privacy policy, please open an issue on our GitHub repository:
-https://github.com/Jackson-G2/Candidate-Ranker-Seek-Linkedin/issues
+Do not upload real candidate HTML captures, credentials or callback URLs to public issues. Development captures in a source checkout are separate files, not part of the extension's runtime storage, and are excluded by the release build.
 
----
+## Purpose, retention and support
 
-## Chrome Web Store Description Suggestion
+Data is used to provide the candidate-comparison and repeat-profile features described here, not for advertising, sale, unrelated profiling or credit/lending eligibility. The extension does not provide the developer with routine access to candidate data. A user-triggered copy action writes selected candidate names to the system clipboard; clipboard history or other applications may retain them.
 
-Here's a description you can use for the Chrome Web Store:
+Local settings, the saved position description and seen history have no automatic expiry in the current implementation. They remain until changed or the applicable extension data is removed. Provider-side retention, training use and deletion rights depend on the provider, account tier and terms; this extension cannot delete provider-held request records. Do not assume API submission is excluded from training or immediately deleted.
 
-**Short Description (132 chars max):**
-```
-AI-powered candidate ranking for recruiters. Rank candidates from Seek and LinkedIn against your job requirements using GLM or Gemini.
-```
-
-**Detailed Description:**
-```
-Candidate Ranker helps recruiters quickly identify the best candidates by using AI to analyze and rank profiles from Seek and LinkedIn.
-
-Features:
-- Rank candidates against your job description
-- Support for GLM (Zhipu AI) and Google Gemini
-- Works on Seek and LinkedIn candidate search pages
-- Color-coded match scores (Excellent, Good, Fair, Weak)
-- Configurable AI provider and model selection
-
-How it works:
-1. Enter your job/position description
-2. Browse candidates on Seek or LinkedIn
-3. Click "Rank Candidates" to get AI-powered match scores
-4. Quickly identify top candidates
-
-Your API key is stored locally and never shared. Candidate data is processed by your chosen AI provider (GLM or Gemini).
-
-Perfect for recruiters, hiring managers, and talent acquisition professionals who want to save time screening candidates.
-```
+For privacy questions or support, open an issue at the public publisher support page: https://github.com/Jackson-G2/candidate-ranker-privacy/issues. Do not include candidate information, API keys, account credentials or authorization URLs in support requests.
