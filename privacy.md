@@ -1,6 +1,6 @@
 # Talent Matcher privacy and data handling
 
-Updated: 27 October 2026. This policy describes Talent Matcher version 1.3.0.
+Updated: 5 November 2026. This policy describes Talent Matcher version 1.4.0 and the provider-independent data handling used by version 1.3.0.
 
 ## What the extension processes
 
@@ -10,7 +10,7 @@ There is no developer-operated collection service, advertising SDK or analytics 
 
 ## Local storage
 
-- Provider settings and Gemini/GLM keys are stored in extension-local browser storage, not newly written to Chrome Sync. Older synced configuration is migrated locally and verified before the synced source is removed.
+- Provider settings and API keys are stored in extension-local browser storage, not newly written to Chrome Sync. Older synced configuration is migrated locally and verified before the synced source is removed.
 - Settings for different providers remain separate. Account/provider switching does not transfer one provider's key to another.
 - The saved position description remains in local extension storage until replaced, cleared, or extension data is removed.
 - Seen history persists stable SEEK profile IDs, counts and last-seen timestamps. Profile IDs can still identify people within SEEK and should be treated as personal data. Names, search/service tokens and full profiles are not written to that history store.
@@ -20,7 +20,9 @@ Browser-local storage is not a separate encrypted vault. Protect the device and 
 
 ## AI providers
 
-Gemini and GLM ranking transmit the saved position description and relevant candidate fields directly to the configured provider over HTTPS when you request ranking. Batch requests include the profile ID, name, title, location and available summary. Single-profile requests can include name, title, previous title, summary, current role/company, location, salary information, skills, work-history role/company/descriptions and certifications where available. These are personal data, even when already visible to your recruiting account.
+Ranking transmits the saved position description and relevant candidate fields directly to your selected AI provider when you request it. Version 1.4.0 adds OpenAI API, Anthropic, OpenRouter, DeepSeek, Groq, Mistral, xAI and custom OpenAI-compatible endpoints alongside Gemini and GLM. This is API-key access, not access to SEEK's API or an included AI subscription. Named remote providers use HTTPS. Custom remote endpoints require HTTPS and a separate browser permission for the chosen origin; HTTP is permitted only for loopback local servers. A local server may itself forward data upstream under its own configuration. Grant custom access only to servers you trust, and review their logging, retention and upstream routing.
+
+Batch requests include the profile ID, name, title, location and available summary. Single-profile requests can include name, title, previous title, summary, current role/company, location, salary information, skills, work-history role/company/descriptions and certifications where available. These are personal data, even when already visible to your recruiting account.
 
 Your API key is sent to the selected provider for authentication, including model discovery, connection tests and ranking. Model refresh requests the provider's model catalogue, not candidate analysis. A connection test sends a small test prompt and may consume provider usage. Saving a position description stores its original text locally; it does not itself request an AI summary. The extension does not automatically fall back to a different provider.
 
@@ -28,6 +30,14 @@ Provider policies and retention are outside this extension's control:
 
 - Google Gemini: https://policies.google.com/privacy and https://ai.google.dev/
 - GLM/Zhipu/z.ai: consult the current privacy and account terms at https://open.bigmodel.cn and https://api.z.ai/
+- OpenAI: https://openai.com/policies/privacy-policy/
+- Anthropic: https://www.anthropic.com/legal/privacy
+- OpenRouter: https://openrouter.ai/privacy (and the selected upstream model provider)
+- DeepSeek: https://www.deepseek.com (current privacy and API terms)
+- Groq: https://groq.com/privacy-policy/
+- Mistral: https://mistral.ai/terms#privacy-policy
+- xAI: https://x.ai/legal/privacy-policy
+- Custom endpoint: the operator and any upstream provider you configure; no particular retention or privacy guarantees are supplied by Talent Matcher.
 
 Review your organisation's recruitment/privacy obligations before transmitting candidate information. AI scores can be wrong or reflect incomplete profile information; do not treat them as automatic hiring decisions.
 
